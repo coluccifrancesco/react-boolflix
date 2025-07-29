@@ -10,20 +10,33 @@ export default function Header(){
     const [ results, setResults ] = useState(null);
     const [ query, setQuery ] = useState('');
     
+    
     if (query === ''){
         console.log('Waiting for a query...');
+    } else{
+        console.log('Query: ' + query);
     }
 
-    console.log('Query: ' + query);
     
     function fetchSearch(e){
         e.preventDefault();
         fetch(`https://api.themoviedb.org/3/search/movie?query=${query}&api_key=${apiKey}`)
         .then(res => res.json())
         .then(data => {
-            console.log(data);  
-            setResults(data)
-        })
+            
+            setResults(
+                data.results[0]
+            )
+            
+            console.log(
+                'Title: ' + results.title + ', ' +
+                'Original title: ' + results.original_title + ', ' +
+                'Language: ' + results.original_language + ', ' +
+                'Average vote: ' + results.vote_average + ', ' +
+                'Vote count: ' + results.vote_count
+            );  
+        
+        })  
     };
 
     useEffect(()=>{}, []);
