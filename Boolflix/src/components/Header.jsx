@@ -43,6 +43,8 @@ export default function Header(){
     // Film research
     function fetchSearch(e){
         e.preventDefault();
+
+        // Fetch film
         fetch(`https://api.themoviedb.org/3/search/movie?query=${query}&api_key=${apiKey}`)
         .then(res => res.json())
         .then(data => {
@@ -65,6 +67,31 @@ export default function Header(){
 
             // Set new object as state
             setResults(filmInfos);
+        });  
+
+        // Fetch Tv-Shows
+        fetch(`https://api.themoviedb.org/3/search/tv?api_key=${apiKey}&query=${query}`)
+        .then(res => res.json())
+        .then(data => {
+
+            // Api results
+            const info = data.results[0];
+            let flag = '';
+
+            // Returns value to put in <x className=>
+            const flagConverted = flagConverter(info, flag);
+            
+            // New object for easier data managment
+            const tvShowsInfos = {
+                'tvShow_title': info.name,
+                'original_title': info.name,
+                'flag': `className=${flagConverted}`, 
+                'vote_average': info.vote_average,
+                'vote_count': info.vote_count
+            }
+
+            // Set new object as state
+            setResults(tvShowsInfos);
         });  
         
         // State checker
