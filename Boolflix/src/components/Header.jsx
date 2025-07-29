@@ -1,16 +1,48 @@
+import { useState, useEffect } from 'react'
+import.meta.env.VITE_API_KEY
 
 
 export default function Header(){
-    return (
-        <nav className="navbar navbar-expand-lg bg-dark fixed-top">
-            <div className="container-fluid">
-                <h1 className="text-danger">BOOLFLIX</h1>
 
-                <form role="search" className="d-flex justify-content-center align-items-center">
-                    <input type="search" placeholder="Title name" className="form-control me-2" />
-                    <button className="btn btn-danger">Search</button>
-                </form>
-            </div>
-        </nav>
+    console.log('Header mounted 🏗️');
+    
+    const apiKey = import.meta.env.VITE_API_KEY;
+    const [ results, setResults ] = useState(null);
+    const [ query, setQuery ] = useState('');
+    
+    if (query === ''){
+        console.log('Waiting for a query...');
+    }
+
+    console.log('Query: ' + query);
+    
+    function fetchSearch(e){
+        e.preventDefault();
+        fetch(`https://api.themoviedb.org/3/search/movie?query=${query}&api_key=${apiKey}`)
+        .then(res => res.json())
+        .then(data => {
+            console.log(data);  
+            setResults(data)
+        })
+    };
+
+    useEffect(()=>{}, []);
+
+
+    return (
+        <header>
+            <nav className="navbar navbar-expand-lg  bg-dark sticky-top p-2">
+                <div className="container-fluid d-flex justify-content-between align-items-center">
+                    
+                    <h1 className="text-danger m-0">BOOLFLIX</h1>
+
+                    <form onSubmit={fetchSearch} role="search" className="d-flex justify-content-center align-items-center">
+                        <input onChange={e => {setQuery(e.target.value)}} type="search" placeholder='Title name' className="form-control me-2" />
+                        <button className="btn btn-danger">Search</button>
+                    </form>
+                
+                </div>
+            </nav>
+        </header>
     )
 }
