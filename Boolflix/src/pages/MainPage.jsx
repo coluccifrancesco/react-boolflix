@@ -22,7 +22,6 @@ export default function MainPage() {
         { es: '🇪🇸' }
     ];
 
-
     // User query check
     if (query === '') {
         console.log('Waiting for a query...');
@@ -49,6 +48,25 @@ export default function MainPage() {
         }
     }
 
+    // Stars giver
+    function starsRating(vote){
+        
+        let starNumber = Math.ceil(vote / 2);
+
+        if (starNumber == 0){
+            return '😯'
+        } else if (starNumber == 1){
+            return '⭐️'
+        } else if (starNumber == 2){
+            return '⭐️⭐️'
+        } else if (starNumber == 3){
+            return '⭐️⭐️⭐️'
+        } else if (starNumber == 4){
+            return '⭐️⭐️⭐️⭐️'
+        } else if (starNumber == 5){
+            return '⭐️⭐️⭐️⭐️⭐️'
+        } 
+    }
 
     // Search
     function fetchSearch(e) {
@@ -64,14 +82,23 @@ export default function MainPage() {
 
             const filmObj = film.map((item) => {
 
+                // Flags logic
                 const lang = item.original_language;
                 const flag = findFlag(lang);
 
+                // Img link
+                const img = 'https://image.tmdb.org/t/p/w342' + item.poster_path;
+
+                // Vote
+                const vote = item.vote_average;
+                const stars = starsRating(vote);
+                
                 return item = {
-                    'Title': item.title ,
+                    'Title': item.title,
                     'Original title': item.original_title,
                     'Original language': flag,
-                    'Average vote': item.vote_average
+                    'Average vote': stars,
+                    'Img': img
                 }
             })
 
@@ -91,14 +118,24 @@ export default function MainPage() {
 
             const tvObj = tv.map((item) => {
 
+                // Flags logic
                 const lang = item.original_language;
                 const flag = findFlag(lang);
+
+                // Img link
+                const img = 'https://image.tmdb.org/t/p/w342' + item.poster_path;
+
+                // Vote
+                const vote = item.vote_average;
+                const stars = starsRating(vote);
+
 
                 return item = {
                     'Name': item.name ,
                     'Original name': item.original_name,
                     'Original language': flag,
-                    'Average vote': item.vote_average
+                    'Average vote': stars,
+                    'Img': img
                 }
             })
 
