@@ -3,11 +3,11 @@ import {useState, useEffect} from 'react'
 
 export default function MainPage() {
 
-
     const apiKey = import.meta.env.VITE_API_KEY;
     const [film, setFilm] = useState(null);
     const [tv, setTv] = useState(null);
     const [query, setQuery] = useState('');
+    const [isHoveredId, setIsHoveredId] = useState(null);
     
     const flags = [
         { us: '🇺🇸' },
@@ -54,7 +54,7 @@ export default function MainPage() {
         let starNumber = Math.ceil(vote / 2);
 
         if (starNumber == 0){
-            return '😯'
+            return 'No rating yet 😯'
         } else if (starNumber == 1){
             return '⭐️'
         } else if (starNumber == 2){
@@ -66,6 +66,15 @@ export default function MainPage() {
         } else if (starNumber == 5){
             return '⭐️⭐️⭐️⭐️⭐️'
         } 
+    }
+
+    // Overview cheker
+    function overCheck(overview){
+        if(overview === ""){
+            return 'No description yet 😕'
+        } else {    
+            return overview
+        }
     }
 
     // Search
@@ -92,13 +101,19 @@ export default function MainPage() {
                 // Vote
                 const vote = item.vote_average;
                 const stars = starsRating(vote);
+
+                // Overview
+                const overview = item.overview;
+                const desc = overCheck(overview);
                 
                 return item = {
-                    'Title': item.title,
-                    'Original title': item.original_title,
-                    'Original language': flag,
-                    'Average vote': stars,
-                    'Img': img
+                    'title': item.title,
+                    'original_title': item.original_title,
+                    'original_language': flag,
+                    'average_vote': stars,
+                    'img': img,
+                    'id': item.id,
+                    'desc': desc
                 }
             })
 
@@ -107,6 +122,7 @@ export default function MainPage() {
             // Set new object as state
             setFilm(filmObj);
         });
+
 
         // Fetch Tv-Shows
         fetch(`https://api.themoviedb.org/3/search/tv?api_key=${apiKey}&query=${query}`)
@@ -129,13 +145,18 @@ export default function MainPage() {
                 const vote = item.vote_average;
                 const stars = starsRating(vote);
 
+                // Overview
+                const overview = item.overview;
+                const desc = overCheck(overview);
 
                 return item = {
-                    'Name': item.name ,
-                    'Original name': item.original_name,
-                    'Original language': flag,
-                    'Average vote': stars,
-                    'Img': img
+                    'name': item.name ,
+                    'original_name': item.original_name,
+                    'original_language': flag,
+                    'average_vote': stars,
+                    'img': img,
+                    'id': item.id,
+                    'desc': desc
                 }
             })
 
@@ -165,10 +186,109 @@ export default function MainPage() {
                 </nav>
             </header>
 
-            <main className="bg-dark-subtle">
 
-                <div className="container d-flex justify-content-center align-items-center">
-                    <h1>Home</h1>
+            <main className="bg-dark-subtle p-3">
+
+                <div>
+
+                    {/* Film display */}
+                    <section className='container'>
+                        <div className='my-4'>
+                            {film ? <h2>Film</h2> : <span></span>}
+                        </div>
+                        
+                        <ul className='row list-unstyled g-4'>
+
+                            {/* // Se film ha un risultato, allora si effettua il map, altrimenti lascio uni spazio vuoto */}
+                            {film ? film.map((item) => {
+                                return <li className='col col-12 col-sm-6 col-md-4 col-lg-3' key={item.id}>
+
+                                    {item ? <div className='card h-100 shadow-sm border-0 overflow-hidden position-relative'
+                                        style={{ 
+                                            transition:'all 0.3s ease',
+                                            cursor: 'pointer'
+                                        }}
+                                        
+                                        // Utilizzo una vriabile di stato a cui associare lo stato di hover 
+                                        onMouseEnter={() => setIsHoveredId(item.id)}
+                                        onMouseLeave={() => setIsHoveredId(null)} >
+                                        
+                                        {/* Se non sono in hover mostro la locandina, altrimenti mostro le informazioni */}
+                                        {isHoveredId != item.id ? <img src={item.img} className='card-img-top' alt='Preview not available'/>
+                                        
+                                        :
+
+                                        <div className='d-block'>
+                                            <img src={item.img} className='card-img-top opacity-25 object-fit-cover"' alt='Preview not available'style={{position:'absolute'}}/>
+                                            
+                                            <div className='container bg-body-dark my-4' style={{position:'absolute'}}>
+                                                <h3 className='card-title fw-bold mb-2 lh-sm'><b>Title:</b> {item.title}</h3>
+                                                <h5 className="text-black-50 fst-italic mb-3 small"><b>Original title:</b> {item.original_title}</h5>
+                                                <p><b>Vote:</b> {item.average_vote}</p>
+                                                <p className="card-text small lh-sm mb-0"><b>Overview:</b> <span style={{fontSize:10, overflow:'hidden'}}>{item.desc}</span></p>
+                                            </div>
+                                        </div>
+                                        }
+                                    
+                                    </div> : <span></span>}
+
+                                </li>
+                                }
+                            
+                            ) : <h2 className="text-muted mb-3">🔍 Make a research!</h2>}
+
+                        </ul>   
+                    </section>
+
+                    
+                    {/* Tv Show display */}
+                    <section className='container'>
+                        <div className='my-4'>
+                            {tv ? <h2>Tv Shows</h2> : <span></span>}
+                        </div>
+                        
+                        <ul className='row list-unstyled g-4'>
+
+                            {tv ? tv.map((item) => {
+                                return <li className='col col-12 col-sm-6 col-md-4 col-lg-3' key={item.id}>
+
+                                    {item ? <div className='card h-100 shadow-sm border-0 overflow-hidden position-relative'
+                                        style={{ 
+                                            transition:'all 0.3s ease',
+                                            cursor: 'pointer'
+                                        }}
+                                        
+                                        // Utilizzo una vriabile di stato a cui associare lo stato di hover 
+                                        onMouseEnter={() => setIsHoveredId(item.id)}
+                                        onMouseLeave={() => setIsHoveredId(null)} >
+                                        
+                                        {/* Se non sono in hover mostro la locandina, altrimenti mostro le informazioni */}
+                                        {isHoveredId != item.id ? <img src={item.img} className='card-img-top' alt='Preview not available'/>
+                                        
+                                        :
+
+                                        <div className='d-block'>
+                                            <img src={item.img} className='card-img-top opacity-25 object-fit-cover"' alt='Preview not available'style={{position:'absolute'}}/>
+                                            
+                                            <div className='container bg-body-dark my-4' style={{position:'absolute'}}>
+                                                <h3 className='card-title fw-bold mb-2 lh-sm'><b>Title:</b> {item.name}</h3>
+                                                <h5 className="text-black-50 fst-italic mb-3 small"><b>Original title:</b> {item.original_name}</h5>
+                                                <p><b>Vote:</b> {item.average_vote}</p>
+                                                <p className="card-text small lh-sm mb-0"><b>Overview:</b> <span style={{fontSize:10, overflow:'hidden'}}>{item.desc}</span></p>
+                                            </div>
+                                        </div>
+                                        }
+                                    
+                                    </div> : <span></span>}
+
+                                </li>
+                                }
+                            
+                            ) : <h2 className="text-muted mb-3">🔍 Make a research!</h2>}
+
+                        </ul>   
+                    </section>
+
                 </div>
 
             </main>
