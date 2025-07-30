@@ -97,7 +97,7 @@ export default function MainPage() {
                 return item = {
                     'Name': item.name ,
                     'Original name': item.original_name,
-                    'Original language': lang,
+                    'Original language': flag,
                     'Average vote': item.vote_average
                 }
             })
