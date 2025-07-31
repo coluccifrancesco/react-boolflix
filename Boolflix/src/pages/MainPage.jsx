@@ -284,7 +284,7 @@ export default function MainPage() {
                                 </li>
                                 }
                             
-                            ) : <h2 className="text-muted mb-3">🔍 Make a research!</h2>}
+                            ) : <span></span>}
 
                         </ul>   
                     </section>
