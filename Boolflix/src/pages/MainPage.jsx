@@ -30,7 +30,7 @@ export default function MainPage() {
     }
 
 
-    // Flag converter, credits --> https://flagicons.lipis.dev/
+    // Flag converter
     function findFlag(lang) {
 
         // originalLanguage
