@@ -187,7 +187,7 @@ export default function MainPage() {
             </header>
 
 
-            <main className="bg-dark-subtle p-3">
+            <main className="bg-dark-subtle p-5">
 
                 <div>
 
@@ -235,7 +235,7 @@ export default function MainPage() {
                                 </li>
                                 }
                             
-                            ) : <h2 className="text-muted mb-3">🔍 Make a research!</h2>}
+                            ) : <h2 className="text-muted text-center mb-3">🔍 Make a research!</h2>}
 
                         </ul>   
                     </section>
